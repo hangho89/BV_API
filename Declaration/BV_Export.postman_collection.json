@@ -1,0 +1,992 @@
+{
+	"info": {
+		"_postman_id": "855764c6-8f48-424a-bb5f-6451e212e7ec",
+		"name": "BV_Export",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5028081",
+		"_collection_link": "https://gold-water-3014.postman.co/workspace/My-Workspace~94bdcccb-b1e9-44a7-84db-0990b4b1f82f/collection/5028081-855764c6-8f48-424a-bb5f-6451e212e7ec?action=share&source=collection_link&creator=5028081"
+	},
+	"item": [
+		{
+			"name": "TemporaryEX",
+			"item": [
+				{
+					"name": "CreateTemporaryEXOneline_U001",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data;\r",
+									"data = pm.response.json();\r",
+									"if(data)\r",
+									"{\r",
+									"   pm.environment.set(\"IDReference_TemporaryEXdraft\", data.data.id);\r",
+									"    pm.environment.set(\"Reference_TemporaryEXdraft\", data.data.reference);\r",
+									"    pm.environment.set(\"IDReference_LineTemporaryEXdraft\", data.data.lines[0].id);\r",
+									"    pm.environment.set(\"Reference_LineTemporaryEXdraft\", data.data.lines[0].hash);\r",
+									"    pm.environment.set(\"permitReferences_TemporaryExport\",data.data.lines[0].permitReferences)\r",
+									"   \r",
+									"   \r",
+									"}\r",
+									"pm.test(\"Status is DRAFT\", function () {\r",
+									"    pm.expect(data.data.status).to.include(\"DRAFT\");\r",
+									"});\r",
+									"pm.test(\"line array has a length of 2\", function () {\r",
+									"    pm.expect(data.data.lines).to.have.lengthOf(2);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"if(pm.response.to.have.status(200))\r",
+									"{\r",
+									"   pm.execution.setNextRequest(\"ValidationDec_TemporaryEXOneline\");\r",
+									"  \r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const evn = pm.variables.get(\"evn\");\r",
+									"pm.sendRequest({\r",
+									"      url: `${evn}/apps/keycloak/realms/TTEK_STAGING/protocol/openid-connect/token`,\r",
+									"      method: 'POST',\r",
+									"       header: {\r",
+									"    'Content-Type': 'application/x-www-form-urlencoded',\r",
+									"  },\r",
+									"      body: {\r",
+									"          mode: 'urlencoded',\r",
+									"          urlencoded: [\r",
+									"            {key: \"grant_type\", value: \"password\"},\r",
+									"            {key: \"client_id\", value: \"BV_SWAGGER_UI\"},\r",
+									"            {key: \"username\", value: \"atlas.officer@yopmail.com\"},\r",
+									"            {key: \"password\", value: \"@Ttek1234\"},\r",
+									"        ]\r",
+									"      }\r",
+									"  }, \r",
+									"  function (err, response) {\r",
+									"    console.log(\"token\",response.json().access_token);\r",
+									"        pm.environment.set(\"tokenIMEX\", response.json().access_token);\r",
+									"  });"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tokenIMEX}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"SUBMISSION\",\r\n    \"data\": {\r\n        \"status\": \"DRAFT\",\r\n        \"regimeCode\": \"1\",\r\n        \"agentName\": \"Atlas World Logistics\",\r\n        \"agentTaxId\": \"90184561\",\r\n        \"agentBizFunction\": \"EX\",\r\n        \"agentCommunication\": \"EM\",\r\n        \"agentCommunicationRef\": \"atlas@yopmail.com\",\r\n        \"agentAddress\": {\r\n            \"id\": \"f6968f7d-5643-4f47-a1f7-e1d9f1ca1368\",\r\n            \"street\": \"Jeddah 7777\",\r\n            \"city\": \"Jeddah\",\r\n            \"poBoxNumber\": \"10101010\",\r\n            \"countryCode\": \"SA\",\r\n            \"address1\": \"111111\",\r\n            \"address2\": \"111111\",\r\n            \"address3\": \"11111\",\r\n            \"country\": \"SA\"\r\n        },\r\n        \"agentCountry\": \"SA\",\r\n        \"carrierName\": \"44440001 - Da Hua\",\r\n        \"traderName\": \"Atlas World Logistics\",\r\n        \"traderTaxId\": \"90184561\",\r\n        \"traderBizFunction\": \"EX\",\r\n        \"traderCommunication\": \"EM\",\r\n        \"traderCommunicationRef\": \"atlas@yopmail.com\",\r\n        \"traderAddress\": {\r\n            \"id\": \"f6968f7d-5643-4f47-a1f7-e1d9f1ca1368\",\r\n            \"street\": \"Jeddah 7777\",\r\n            \"city\": \"Jeddah\",\r\n            \"poBoxNumber\": \"10101010\",\r\n            \"countryCode\": \"SA\",\r\n            \"address1\": \"111111\",\r\n            \"address2\": \"111111\",\r\n            \"address3\": \"11111\"\r\n        },\r\n        \"traderCountry\": \"SA\",\r\n        \"procedureCode\": \"2\",\r\n        \"transportModeCode\": \"1\",\r\n        \"lines\": [\r\n            {\r\n                \"id\": \"ac29cf59-4f7f-4781-a077-b0d04187d864\",\r\n                \"commodityClassification\": \"01012103\",\r\n                \"commercialGoodsDesc\": \"Oranges\",\r\n                \"supplementaryQuantity\": 100,\r\n                \"permitReferences\": [\r\n                    \"1100003228\"\r\n                ],\r\n                \"goodsStatusCode\": null,\r\n                \"countryOriginCode\": \"AD\",\r\n                \"regionOriginCode\": \"08\",\r\n                \"declaredValue\": 15000,\r\n                \"dutyAssessmentValue\": 15000,\r\n                \"freightCharge\": 137178.069,\r\n                \"insuranceCharge\": 137178.069,\r\n                \"tariffPreferenceClaimedCode\": null,\r\n                \"govtProcedureClaimedCode\": null,\r\n                \"containerReferences\": [\r\n                    \"MSCU2092276\",\r\n                    \"IPXU2148384\"\r\n                ],\r\n                \"numberPackages\": 10000,\r\n                \"grossWeight\": 10000,\r\n                \"netWeight\": null,\r\n                \"vehicles\": [],\r\n                \"containers\": [\r\n                    {\r\n                        \"seals\": \"4000001, 4000002, 4000003, 4000004\",\r\n                        \"containerType\": \"20R0\",\r\n                        \"containerNumber\": \"MSCU2092276\"\r\n                    },\r\n                    {\r\n                        \"seals\": \"5000001, 5000002, 5000003, 5000004\",\r\n                        \"containerType\": \"20R0\",\r\n                        \"containerNumber\": \"IPXU2148384\"\r\n                    }\r\n                ],\r\n                \"manufacture\": \"Godi Cheese With Vegetable Oil\",\r\n                \"shippingMark\": \"Oranges contained in two container\",\r\n                \"modelVehicles\": [],\r\n                \"insuranceLocal\": 137178.069,\r\n                \"packageOfVolM3\": 100,\r\n                \"quotaProfileId\": null,\r\n                \"deductionsLocal\": 0,\r\n                \"insuranceFxRate\": 68.58903439671487,\r\n                \"intFreightLocal\": 137178.069,\r\n                \"otherCostsLocal\": 0,\r\n                \"valuationMethod\": \"1\",\r\n                \"deductedQuantity\": null,\r\n                \"deductionsFxRate\": 0,\r\n                \"descriptionGoods\": \" ---others\",\r\n                \"insuranceForeign\": 2000,\r\n                \"intFreightFxRate\": 68.58903439671487,\r\n                \"lineCurrencyCode\": \"AFN\",\r\n                \"lineExchangeRate\": 1,\r\n                \"netWeightUOMCode\": \"KGM\",\r\n                \"otherCostsFxRate\": 0,\r\n                \"deductionsForeign\": 0,\r\n                \"intFreightForeign\": 2000,\r\n                \"otherCostsForeign\": 0,\r\n                \"grossWeightUOMCode\": \"KGM\",\r\n                \"governmentProcedure\": \"2100\",\r\n                \"linePackageTypeCode\": \"4A\",\r\n                \"statisticalQuantity\": 15000,\r\n                \"statisticalUnitCode\": \"KGM\",\r\n                \"valuationMethodCode\": \"1\",\r\n                \"supplierRelationCode\": \"135\",\r\n                \"valueForeignCurrency\": 15000,\r\n                \"insuranceCurrencyCode\": \"USD\",\r\n                \"deductionsCurrencyCode\": 0,\r\n                \"intFreightCurrencyCode\": \"USD\",\r\n                \"otherCostsCurrencyCode\": 0,\r\n                \"associatedGovtProcedure\": true,\r\n                \"valuationAdjustmentRate\": 1,\r\n                \"valuationAdjustmentValue\": 0,\r\n                \"commodityClassificationRef\": null,\r\n                \"commodityClassificationCode\": null,\r\n                \"valuationAdjustmentTypeCode\": null\r\n            },\r\n            {\r\n                \"id\": \"8fc02747-3909-462d-b3d6-7f10ddb0edc6\",\r\n                \"commodityClassification\": \"62113300\",\r\n                \"commercialGoodsDesc\": \"62113300\",\r\n                \"supplementaryQuantity\": 10000,\r\n                \"permitReferences\": [\r\n                    \"1100003228\"\r\n                ],\r\n                \"goodsStatusCode\": null,\r\n                \"countryOriginCode\": \"AD\",\r\n                \"regionOriginCode\": \"08\",\r\n                \"declaredValue\": 1200,\r\n                \"dutyAssessmentValue\": 1200,\r\n                \"freightCharge\": 0,\r\n                \"insuranceCharge\": 0,\r\n                \"tariffPreferenceClaimedCode\": null,\r\n                \"govtProcedureClaimedCode\": null,\r\n                \"containerReferences\": [\r\n                    \"MSCU2092276\",\r\n                    \"IPXU2148384\"\r\n                ],\r\n                \"numberPackages\": 10000,\r\n                \"grossWeight\": 10000,\r\n                \"netWeight\": null,\r\n                \"vehicles\": [],\r\n                \"containers\": [\r\n                    {\r\n                        \"seals\": \"4000001, 4000002, 4000003, 4000004\",\r\n                        \"containerType\": \"20R0\",\r\n                        \"containerNumber\": \"MSCU2092276\"\r\n                    },\r\n                    {\r\n                        \"seals\": \"5000001, 5000002, 5000003, 5000004\",\r\n                        \"containerType\": \"20R0\",\r\n                        \"containerNumber\": \"IPXU2148384\"\r\n                    }\r\n                ],\r\n                \"shippingMark\": \"66\",\r\n                \"modelVehicles\": [],\r\n                \"insuranceLocal\": 0,\r\n                \"packageOfVolM3\": 1000,\r\n                \"quotaProfileId\": null,\r\n                \"deductionsLocal\": 0,\r\n                \"insuranceFxRate\": \"\",\r\n                \"intFreightLocal\": 0,\r\n                \"otherCostsLocal\": 0,\r\n                \"deductedQuantity\": null,\r\n                \"deductionsFxRate\": 0,\r\n                \"descriptionGoods\": \"-- Of man-made fibres\",\r\n                \"insuranceForeign\": null,\r\n                \"intFreightFxRate\": \"\",\r\n                \"lineCurrencyCode\": \"AFN\",\r\n                \"lineExchangeRate\": 1,\r\n                \"netWeightUOMCode\": null,\r\n                \"otherCostsFxRate\": 0,\r\n                \"deductionsForeign\": 0,\r\n                \"intFreightForeign\": null,\r\n                \"otherCostsForeign\": 0,\r\n                \"grossWeightUOMCode\": \"KGM\",\r\n                \"governmentProcedure\": \"2100\",\r\n                \"linePackageTypeCode\": \"1A\",\r\n                \"statisticalQuantity\": 1200,\r\n                \"statisticalUnitCode\": \"KGM\",\r\n                \"valuationMethodCode\": \"1\",\r\n                \"supplierRelationCode\": null,\r\n                \"valueForeignCurrency\": 1200,\r\n                \"insuranceCurrencyCode\": null,\r\n                \"deductionsCurrencyCode\": 0,\r\n                \"intFreightCurrencyCode\": null,\r\n                \"otherCostsCurrencyCode\": 0,\r\n                \"associatedGovtProcedure\": true,\r\n                \"valuationAdjustmentRate\": 1,\r\n                \"valuationAdjustmentValue\": 0,\r\n                \"commodityClassificationRef\": null,\r\n                \"commodityClassificationCode\": null,\r\n                \"valuationAdjustmentTypeCode\": null\r\n            }\r\n        ],\r\n        \"containers\": [\r\n            {\r\n                \"seals\": \"4000001, 4000002, 4000003, 4000004\",\r\n                \"containerType\": \"20R0\",\r\n                \"containerNumber\": \"MSCU2092276\"\r\n            },\r\n            {\r\n                \"seals\": \"5000001, 5000002, 5000003, 5000004\",\r\n                \"containerType\": \"20R0\",\r\n                \"containerNumber\": \"IPXU2148384\"\r\n            }\r\n        ],\r\n        \"attachments\": [],\r\n        \"totalNetWeight\": 0,\r\n        \"totalVehicles\": 0,\r\n        \"totalContainers\": 2,\r\n        \"facilities\": [\r\n            {\r\n                \"code\": \"DU001\",\r\n                \"name\": \"U001\"\r\n            }\r\n        ],\r\n        \"securityDetails\": \"100001765BGC24082024-TE\",\r\n        \"selfDeclared\": true,\r\n        \"agentId\": \"7d4e0dcb-0e3e-4fbb-87fb-acb555ae4edd\",\r\n        \"agentBlacklistedLatest\": false,\r\n        \"reasons\": [],\r\n        \"rejectReasons\": null,\r\n        \"cancelReasons\": null,\r\n        \"inquiries\": null,\r\n        \"errorReason\": null,\r\n        \"agent\": \"90184561\",\r\n        \"trader\": \"90184561\",\r\n        \"parties\": [\r\n            {\r\n                \"name\": \"Godi Cheese With Vegetable Oil\",\r\n                \"type\": \"NOTIFY_PARTIES\",\r\n                \"address\": \"1001 Industry Rd, Suite AKenner, LA 70062\",\r\n                \"communication\": \"TE\",\r\n                \"communicationReference\": \"973172696\"\r\n            }\r\n        ],\r\n        \"remarks\": null,\r\n        \"version\": 0,\r\n        \"packages\": [\r\n            {\r\n                \"total\": 1000,\r\n                \"packageType\": \"1A\"\r\n            }\r\n        ],\r\n        \"traderId\": \"7d4e0dcb-0e3e-4fbb-87fb-acb555ae4edd\",\r\n        \"consignee\": \"7632890145\",\r\n        \"totalLines\": 2,\r\n        \"arrivalDate\": \"2021-09-13T00:00:00.000Z\",\r\n        \"carrierCode\": \"44440001\",\r\n        \"incotermCode\": \"CFR\",\r\n        \"totalFreight\": 137178.069,\r\n        \"consigneeName\": \"SHREE KRISHNA RICE MILLS\",\r\n        \"consignorName\": null,\r\n        \"totalPackages\": 20000,\r\n        \"totalInsurance\": 137178.069,\r\n        \"ecvrOptionalFee\": false,\r\n        \"invoiceDocument\": [],\r\n        \"officeEntryCode\": \"SAJED\",\r\n        \"traderReference\": null,\r\n        \"consigneeAddress\": \"Galb Kheri Road, Pakhana\",\r\n        \"consigneeCountry\": \"IN\",\r\n        \"consignorAddress\": null,\r\n        \"consignorCountry\": null,\r\n        \"hlevyOptionalFee\": false,\r\n        \"loadingPlaceCode\": \"SAJED\",\r\n        \"officeExportCode\": \"SAJED\",\r\n        \"risklabReference\": \"684ec856-1aa1-4934-8717-c153fcc24666\",\r\n        \"securityTypeCode\": \"BON\",\r\n        \"totalGrossWeight\": 20000,\r\n        \"typeMeansTadCode\": \"1\",\r\n        \"completionTempDec\": false,\r\n        \"countryExportCode\": \"IN\",\r\n        \"goodsLocationCode\": \"889911CCA\",\r\n        \"htt001OptionalFee\": false,\r\n        \"incotermPlaceCode\": \"SAJED\",\r\n        \"incotermPlaceName\": \"Jeddah\",\r\n        \"additionalDocument\": [],\r\n        \"placeDischargeCode\": \"GHABK\",\r\n        \"totalInvoiceAmount\": 16200,\r\n        \"nationalMeansTadCode\": \"IN\",\r\n        \"natureTransactionCode\": \"1\",\r\n        \"officeDeclarationCode\": \"GHABK\",\r\n        \"totalInsuranceForeign\": 2000,\r\n        \"consigneeCommunication\": \"AH\",\r\n        \"consignorCommunication\": null,\r\n        \"countryDestinationCode\": \"AD\",\r\n        \"freightApportQualifier\": \"VOL\",\r\n        \"identificationMeansTad\": \"SA578\",\r\n        \"totalIntFreightForeign\": 2000,\r\n        \"declarationCurrencyCode\": \"AFN\",\r\n        \"traderBlacklistedLatest\": false,\r\n        \"freightApportQualifierCode\": null,\r\n        \"consigneeCommunicationReference\": \"abc.com\",\r\n        \"consignorCommunicationReference\": null,\r\n        \"previousDocumentNo\": null,\r\n        \"depositPeriod\": 120,\r\n        \"expiryDate\": \"2025-09-24T02:06:32.880Z\",\r\n        \"totalDocuments\": 0\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{evn}}/api/gateway/v1/decman/requests",
+							"host": [
+								"{{evn}}"
+							],
+							"path": [
+								"api",
+								"gateway",
+								"v1",
+								"decman",
+								"requests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateTemporaryEXOneline_U002",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data;\r",
+									"data = pm.response.json();\r",
+									"if(data)\r",
+									"{\r",
+									"   pm.environment.set(\"IDReference_TemporaryEXdraft\", data.data.id);\r",
+									"    pm.environment.set(\"Reference_TemporaryEXdraft\", data.data.reference);\r",
+									"    pm.environment.set(\"IDReference_LineTemporaryEXdraft\", data.data.lines[0].id);\r",
+									"    pm.environment.set(\"Reference_LineTemporaryEXdraft\", data.data.lines[0].hash);\r",
+									"    pm.environment.set(\"permitReferences_TemporaryExport\",data.data.lines[0].permitReferences)\r",
+									"   \r",
+									"   \r",
+									"}\r",
+									"pm.test(\"Status is DRAFT\", function () {\r",
+									"    pm.expect(data.data.status).to.include(\"DRAFT\");\r",
+									"});\r",
+									"pm.test(\"line array has a length of 1\", function () {\r",
+									"    pm.expect(data.data.lines).to.have.lengthOf(1);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"if(pm.response.to.have.status(200))\r",
+									"{\r",
+									"   pm.execution.setNextRequest(\"ValidationDec_TemporaryEXOneline\");\r",
+									"  \r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const evn = pm.variables.get(\"evn\");\r",
+									"pm.sendRequest({\r",
+									"      url: `${evn}/apps/keycloak/realms/TTEK_STAGING/protocol/openid-connect/token`,\r",
+									"      method: 'POST',\r",
+									"       header: {\r",
+									"    'Content-Type': 'application/x-www-form-urlencoded',\r",
+									"  },\r",
+									"      body: {\r",
+									"          mode: 'urlencoded',\r",
+									"          urlencoded: [\r",
+									"            {key: \"grant_type\", value: \"password\"},\r",
+									"            {key: \"client_id\", value: \"BV_SWAGGER_UI\"},\r",
+									"            {key: \"username\", value: \"atlas.officer@yopmail.com\"},\r",
+									"            {key: \"password\", value: \"@Ttek1234\"},\r",
+									"        ]\r",
+									"      }\r",
+									"  }, \r",
+									"  function (err, response) {\r",
+									"    console.log(\"token\",response.json().access_token);\r",
+									"        pm.environment.set(\"tokenIMEX\", response.json().access_token);\r",
+									"  });"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tokenIMEX}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"SUBMISSION\",\r\n    \"data\": {\r\n        \"status\": \"DRAFT\",\r\n        \"regimeCode\": \"1\",\r\n        \"agentName\": \"Atlas World Logistics\",\r\n        \"agentTaxId\": \"90184561\",\r\n        \"agentBizFunction\": \"EX\",\r\n        \"agentCommunication\": \"EM\",\r\n        \"agentCommunicationRef\": \"atlas@yopmail.com\",\r\n        \"agentAddress\": {\r\n            \"id\": \"f6968f7d-5643-4f47-a1f7-e1d9f1ca1368\",\r\n            \"street\": \"Jeddah 7777\",\r\n            \"city\": \"Jeddah\",\r\n            \"poBoxNumber\": \"10101010\",\r\n            \"countryCode\": \"SA\",\r\n            \"address1\": \"111111\",\r\n            \"address2\": \"111111\",\r\n            \"address3\": \"11111\",\r\n            \"country\": \"SA\"\r\n        },\r\n        \"agentCountry\": \"SA\",\r\n        \"carrierName\": \"44440001 - Da Hua\",\r\n        \"traderName\": \"Atlas World Logistics\",\r\n        \"traderTaxId\": \"90184561\",\r\n        \"traderBizFunction\": \"EX\",\r\n        \"traderCommunication\": \"EM\",\r\n        \"traderCommunicationRef\": \"atlas@yopmail.com\",\r\n        \"traderAddress\": {\r\n            \"id\": \"f6968f7d-5643-4f47-a1f7-e1d9f1ca1368\",\r\n            \"street\": \"Jeddah 7777\",\r\n            \"city\": \"Jeddah\",\r\n            \"poBoxNumber\": \"10101010\",\r\n            \"countryCode\": \"SA\",\r\n            \"address1\": \"111111\",\r\n            \"address2\": \"111111\",\r\n            \"address3\": \"11111\"\r\n        },\r\n        \"traderCountry\": \"SA\",\r\n        \"procedureCode\": \"2\",\r\n        \"transportModeCode\": \"1\",\r\n        \"lines\": [\r\n            {\r\n                \"id\": \"ac29cf59-4f7f-4781-a077-b0d04187d864\",\r\n                \"commodityClassification\": \"01012103\",\r\n                \"commercialGoodsDesc\": \"Oranges\",\r\n                \"supplementaryQuantity\": 100,\r\n                \"permitReferences\": [\r\n                    \"1100003228\"\r\n                ],\r\n                \"goodsStatusCode\": null,\r\n                \"countryOriginCode\": \"AD\",\r\n                \"regionOriginCode\": \"08\",\r\n                \"declaredValue\": 15000,\r\n                \"dutyAssessmentValue\": 15000,\r\n                \"freightCharge\": 137178.069,\r\n                \"insuranceCharge\": 137178.069,\r\n                \"tariffPreferenceClaimedCode\": null,\r\n                \"govtProcedureClaimedCode\": null,\r\n                \"containerReferences\": [\r\n                    \"MSCU2092276\",\r\n                    \"IPXU2148384\"\r\n                ],\r\n                \"numberPackages\": 10000,\r\n                \"grossWeight\": 10000,\r\n                \"netWeight\": null,\r\n                \"vehicles\": [],\r\n                \"containers\": [\r\n                    {\r\n                        \"seals\": \"4000001, 4000002, 4000003, 4000004\",\r\n                        \"containerType\": \"20R0\",\r\n                        \"containerNumber\": \"MSCU2092276\"\r\n                    },\r\n                    {\r\n                        \"seals\": \"5000001, 5000002, 5000003, 5000004\",\r\n                        \"containerType\": \"20R0\",\r\n                        \"containerNumber\": \"IPXU2148384\"\r\n                    }\r\n                ],\r\n                \"manufacture\": \"Godi Cheese With Vegetable Oil\",\r\n                \"shippingMark\": \"Oranges contained in two container\",\r\n                \"modelVehicles\": [],\r\n                \"insuranceLocal\": 137178.069,\r\n                \"packageOfVolM3\": 100,\r\n                \"quotaProfileId\": null,\r\n                \"deductionsLocal\": 0,\r\n                \"insuranceFxRate\": 68.58903439671487,\r\n                \"intFreightLocal\": 137178.069,\r\n                \"otherCostsLocal\": 0,\r\n                \"valuationMethod\": \"1\",\r\n                \"deductedQuantity\": null,\r\n                \"deductionsFxRate\": 0,\r\n                \"descriptionGoods\": \" ---others\",\r\n                \"insuranceForeign\": 2000,\r\n                \"intFreightFxRate\": 68.58903439671487,\r\n                \"lineCurrencyCode\": \"AFN\",\r\n                \"lineExchangeRate\": 1,\r\n                \"netWeightUOMCode\": \"KGM\",\r\n                \"otherCostsFxRate\": 0,\r\n                \"deductionsForeign\": 0,\r\n                \"intFreightForeign\": 2000,\r\n                \"otherCostsForeign\": 0,\r\n                \"grossWeightUOMCode\": \"KGM\",\r\n                \"governmentProcedure\": \"2100\",\r\n                \"linePackageTypeCode\": \"4A\",\r\n                \"statisticalQuantity\": 15000,\r\n                \"statisticalUnitCode\": \"KGM\",\r\n                \"valuationMethodCode\": \"1\",\r\n                \"supplierRelationCode\": \"135\",\r\n                \"valueForeignCurrency\": 15000,\r\n                \"insuranceCurrencyCode\": \"USD\",\r\n                \"deductionsCurrencyCode\": 0,\r\n                \"intFreightCurrencyCode\": \"USD\",\r\n                \"otherCostsCurrencyCode\": 0,\r\n                \"associatedGovtProcedure\": true,\r\n                \"valuationAdjustmentRate\": 1,\r\n                \"valuationAdjustmentValue\": 0,\r\n                \"commodityClassificationRef\": null,\r\n                \"commodityClassificationCode\": null,\r\n                \"valuationAdjustmentTypeCode\": null\r\n            },\r\n            {\r\n                \"id\": \"8fc02747-3909-462d-b3d6-7f10ddb0edc6\",\r\n                \"commodityClassification\": \"62113300\",\r\n                \"commercialGoodsDesc\": \"62113300\",\r\n                \"supplementaryQuantity\": 10000,\r\n                \"permitReferences\": [\r\n                    \"1100003228\"\r\n                ],\r\n                \"goodsStatusCode\": null,\r\n                \"countryOriginCode\": \"AD\",\r\n                \"regionOriginCode\": \"08\",\r\n                \"declaredValue\": 1200,\r\n                \"dutyAssessmentValue\": 1200,\r\n                \"freightCharge\": 0,\r\n                \"insuranceCharge\": 0,\r\n                \"tariffPreferenceClaimedCode\": null,\r\n                \"govtProcedureClaimedCode\": null,\r\n                \"containerReferences\": [\r\n                    \"MSCU2092276\",\r\n                    \"IPXU2148384\"\r\n                ],\r\n                \"numberPackages\": 10000,\r\n                \"grossWeight\": 10000,\r\n                \"netWeight\": null,\r\n                \"vehicles\": [],\r\n                \"containers\": [\r\n                    {\r\n                        \"seals\": \"4000001, 4000002, 4000003, 4000004\",\r\n                        \"containerType\": \"20R0\",\r\n                        \"containerNumber\": \"MSCU2092276\"\r\n                    },\r\n                    {\r\n                        \"seals\": \"5000001, 5000002, 5000003, 5000004\",\r\n                        \"containerType\": \"20R0\",\r\n                        \"containerNumber\": \"IPXU2148384\"\r\n                    }\r\n                ],\r\n                \"shippingMark\": \"66\",\r\n                \"modelVehicles\": [],\r\n                \"insuranceLocal\": 0,\r\n                \"packageOfVolM3\": 1000,\r\n                \"quotaProfileId\": null,\r\n                \"deductionsLocal\": 0,\r\n                \"insuranceFxRate\": \"\",\r\n                \"intFreightLocal\": 0,\r\n                \"otherCostsLocal\": 0,\r\n                \"deductedQuantity\": null,\r\n                \"deductionsFxRate\": 0,\r\n                \"descriptionGoods\": \"-- Of man-made fibres\",\r\n                \"insuranceForeign\": null,\r\n                \"intFreightFxRate\": \"\",\r\n                \"lineCurrencyCode\": \"AFN\",\r\n                \"lineExchangeRate\": 1,\r\n                \"netWeightUOMCode\": null,\r\n                \"otherCostsFxRate\": 0,\r\n                \"deductionsForeign\": 0,\r\n                \"intFreightForeign\": null,\r\n                \"otherCostsForeign\": 0,\r\n                \"grossWeightUOMCode\": \"KGM\",\r\n                \"governmentProcedure\": \"2100\",\r\n                \"linePackageTypeCode\": \"1A\",\r\n                \"statisticalQuantity\": 1200,\r\n                \"statisticalUnitCode\": \"KGM\",\r\n                \"valuationMethodCode\": \"1\",\r\n                \"supplierRelationCode\": null,\r\n                \"valueForeignCurrency\": 1200,\r\n                \"insuranceCurrencyCode\": null,\r\n                \"deductionsCurrencyCode\": 0,\r\n                \"intFreightCurrencyCode\": null,\r\n                \"otherCostsCurrencyCode\": 0,\r\n                \"associatedGovtProcedure\": true,\r\n                \"valuationAdjustmentRate\": 1,\r\n                \"valuationAdjustmentValue\": 0,\r\n                \"commodityClassificationRef\": null,\r\n                \"commodityClassificationCode\": null,\r\n                \"valuationAdjustmentTypeCode\": null\r\n            }\r\n        ],\r\n        \"containers\": [\r\n            {\r\n                \"seals\": \"4000001, 4000002, 4000003, 4000004\",\r\n                \"containerType\": \"20R0\",\r\n                \"containerNumber\": \"MSCU2092276\"\r\n            },\r\n            {\r\n                \"seals\": \"5000001, 5000002, 5000003, 5000004\",\r\n                \"containerType\": \"20R0\",\r\n                \"containerNumber\": \"IPXU2148384\"\r\n            }\r\n        ],\r\n        \"attachments\": [],\r\n        \"totalNetWeight\": 0,\r\n        \"totalVehicles\": 0,\r\n        \"totalContainers\": 2,\r\n        \"facilities\": [\r\n            {\r\n                \"code\": \"U002\",\r\n                \"name\": \"U002\"\r\n            }\r\n        ],\r\n        \"securityDetails\": \"100001765BGC24082024-TE\",\r\n        \"selfDeclared\": true,\r\n        \"agentId\": \"7d4e0dcb-0e3e-4fbb-87fb-acb555ae4edd\",\r\n        \"agentBlacklistedLatest\": false,\r\n        \"reasons\": [],\r\n        \"rejectReasons\": null,\r\n        \"cancelReasons\": null,\r\n        \"inquiries\": null,\r\n        \"errorReason\": null,\r\n        \"agent\": \"90184561\",\r\n        \"trader\": \"90184561\",\r\n        \"parties\": [\r\n            {\r\n                \"name\": \"Godi Cheese With Vegetable Oil\",\r\n                \"type\": \"NOTIFY_PARTIES\",\r\n                \"address\": \"1001 Industry Rd, Suite AKenner, LA 70062\",\r\n                \"communication\": \"TE\",\r\n                \"communicationReference\": \"973172696\"\r\n            }\r\n        ],\r\n        \"remarks\": null,\r\n        \"version\": 0,\r\n        \"packages\": [\r\n            {\r\n                \"total\": 1000,\r\n                \"packageType\": \"1A\"\r\n            }\r\n        ],\r\n        \"traderId\": \"7d4e0dcb-0e3e-4fbb-87fb-acb555ae4edd\",\r\n        \"consignee\": \"7632890145\",\r\n        \"totalLines\": 2,\r\n        \"arrivalDate\": \"2021-09-13T00:00:00.000Z\",\r\n        \"carrierCode\": \"44440001\",\r\n        \"incotermCode\": \"CFR\",\r\n        \"totalFreight\": 137178.069,\r\n        \"consigneeName\": \"SHREE KRISHNA RICE MILLS\",\r\n        \"consignorName\": null,\r\n        \"totalPackages\": 20000,\r\n        \"totalInsurance\": 137178.069,\r\n        \"ecvrOptionalFee\": false,\r\n        \"invoiceDocument\": [],\r\n        \"officeEntryCode\": \"SAJED\",\r\n        \"traderReference\": null,\r\n        \"consigneeAddress\": \"Galb Kheri Road, Pakhana\",\r\n        \"consigneeCountry\": \"IN\",\r\n        \"consignorAddress\": null,\r\n        \"consignorCountry\": null,\r\n        \"hlevyOptionalFee\": false,\r\n        \"loadingPlaceCode\": \"SAJED\",\r\n        \"officeExportCode\": \"SAJED\",\r\n        \"risklabReference\": \"684ec856-1aa1-4934-8717-c153fcc24666\",\r\n        \"securityTypeCode\": \"BON\",\r\n        \"totalGrossWeight\": 20000,\r\n        \"typeMeansTadCode\": \"1\",\r\n        \"completionTempDec\": false,\r\n        \"countryExportCode\": \"IN\",\r\n        \"goodsLocationCode\": \"889911CCA\",\r\n        \"htt001OptionalFee\": false,\r\n        \"incotermPlaceCode\": \"SAJED\",\r\n        \"incotermPlaceName\": \"Jeddah\",\r\n        \"additionalDocument\": [],\r\n        \"placeDischargeCode\": \"GHABK\",\r\n        \"totalInvoiceAmount\": 16200,\r\n        \"nationalMeansTadCode\": \"IN\",\r\n        \"natureTransactionCode\": \"1\",\r\n        \"officeDeclarationCode\": \"GHABK\",\r\n        \"totalInsuranceForeign\": 2000,\r\n        \"consigneeCommunication\": \"AH\",\r\n        \"consignorCommunication\": null,\r\n        \"countryDestinationCode\": \"AD\",\r\n        \"freightApportQualifier\": \"VOL\",\r\n        \"identificationMeansTad\": \"SA578\",\r\n        \"totalIntFreightForeign\": 2000,\r\n        \"declarationCurrencyCode\": \"AFN\",\r\n        \"traderBlacklistedLatest\": false,\r\n        \"freightApportQualifierCode\": null,\r\n        \"consigneeCommunicationReference\": \"abc.com\",\r\n        \"consignorCommunicationReference\": null,\r\n        \"previousDocumentNo\": null,\r\n        \"depositPeriod\": 120,\r\n        \"expiryDate\": \"2025-09-24T02:06:32.880Z\",\r\n        \"totalDocuments\": 0\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{evn}}/api/gateway/v1/decman/requests",
+							"host": [
+								"{{evn}}"
+							],
+							"path": [
+								"api",
+								"gateway",
+								"v1",
+								"decman",
+								"requests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ValidationDec_TemporaryEXOneline",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data;\r",
+									"data = pm.response.json();\r",
+									"if(data)\r",
+									"{\r",
+									"   pm.environment.set(\"errorCount\", data.data.errorCount);  \r",
+									"}\r",
+									"if (data.data.errorCount == 0)\r",
+									"{\r",
+									"     pm.execution.setNextRequest(\"SubmitTemporaryEX\");\r",
+									"      pm.test(\"Check if the error count is 0\", function () {\r",
+									"    pm.expect(pm.environment.get(\"errorCount\")).to.equal(0);\r",
+									"});\r",
+									"   \r",
+									"}\r",
+									"else\r",
+									"{\r",
+									"    pm.execution.setNextRequest(null)\r",
+									"      pm.test(\"Check if the error count is more than 0\", function () {\r",
+									"    pm.expect(data.data.errorCount).to.be.greaterThan(0);\r",
+									"});\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"\r",
+									"//   setTimeout(function(){\r",
+									"//           console.log(\"Sleeping for 3 seconds before next request.\");\r",
+									"//   }, 3000);\r",
+									"\r",
+									"//   pm.execution.skipRequest(\"ValidationDec_TemporaryIMOneline\");\r",
+									" //pm.execution.skipRequest()\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tokenIMEX}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"DRAFT\",\r\n    \"regimeCode\": \"1\",\r\n    \"agentName\": \"Atlas World Logistics\",\r\n    \"agentTaxId\": \"90184561\",\r\n    \"agentBizFunction\": \"EX\",\r\n    \"agentCommunication\": \"EM\",\r\n    \"agentCommunicationRef\": \"atlas@yopmail.com\",\r\n    \"agentAddress\": {\r\n        \"id\": \"f6968f7d-5643-4f47-a1f7-e1d9f1ca1368\",\r\n        \"street\": \"Jeddah 7777\",\r\n        \"city\": \"Jeddah\",\r\n        \"poBoxNumber\": \"10101010\",\r\n        \"countryCode\": \"SA\",\r\n        \"address1\": \"111111\",\r\n        \"address2\": \"111111\",\r\n        \"address3\": \"11111\",\r\n        \"country\": \"SA\"\r\n    },\r\n    \"agentCountry\": \"SA\",\r\n    \"carrierName\": \"44440001 - Da Hua\",\r\n    \"traderName\": \"Atlas World Logistics\",\r\n    \"traderTaxId\": \"90184561\",\r\n    \"traderBizFunction\": \"EX\",\r\n    \"traderCommunication\": \"EM\",\r\n    \"traderCommunicationRef\": \"atlas@yopmail.com\",\r\n    \"traderAddress\": {\r\n        \"id\": \"f6968f7d-5643-4f47-a1f7-e1d9f1ca1368\",\r\n        \"street\": \"Jeddah 7777\",\r\n        \"city\": \"Jeddah\",\r\n        \"poBoxNumber\": \"10101010\",\r\n        \"countryCode\": \"SA\",\r\n        \"address1\": \"111111\",\r\n        \"address2\": \"111111\",\r\n        \"address3\": \"11111\"\r\n    },\r\n    \"traderCountry\": \"SA\",\r\n    \"procedureCode\": \"2\",\r\n    \"transportModeCode\": \"1\",\r\n    \"lines\": [\r\n        {\r\n            \"id\": \"{{IDReference_LineTemporaryEXdraft}}\",\r\n            \"commodityClassification\": \"01012103\",\r\n            \"commercialGoodsDesc\": \"Oranges\",\r\n            \"supplementaryQuantity\": 100,\r\n            \"permitReferences\": [\r\n                \"{{permitReferences_TemporaryExport}}\"\r\n            ],\r\n            \"goodsStatusCode\": \"1\",\r\n            \"countryOriginCode\": \"AD\",\r\n            \"regionOriginCode\": \"08\",\r\n            \"declaredValue\": 15000,\r\n            \"dutyAssessmentValue\": 15000,\r\n            \"freightCharge\": 136792.917,\r\n            \"insuranceCharge\": 136792.917,\r\n            \"tariffPreferenceClaimedCode\": null,\r\n            \"govtProcedureClaimedCode\": null,\r\n            \"containerReferences\": [\r\n                \"MSCU2092276\",\r\n                \"IPXU2148384\"\r\n            ],\r\n            \"numberPackages\": 10000,\r\n            \"grossWeight\": 10000,\r\n            \"netWeight\": null,\r\n            \"seqNumber\": 1,\r\n            \"hash\": \"{{Reference_LineTemporaryEXdraft}}\",\r\n            \"vehicles\": [],\r\n            \"containers\": [\r\n                {\r\n                    \"seals\": \"4000001, 4000002, 4000003, 4000004\",\r\n                    \"containerType\": \"20R0\",\r\n                    \"containerNumber\": \"MSCU2092276\"\r\n                },\r\n                {\r\n                    \"seals\": \"5000001, 5000002, 5000003, 5000004\",\r\n                    \"containerType\": \"20R0\",\r\n                    \"containerNumber\": \"IPXU2148384\"\r\n                }\r\n            ],\r\n            \"manufacture\": \"Godi Cheese With Vegetable Oil\",\r\n            \"shippingMark\": \"Oranges contained in two container\",\r\n            \"modelVehicles\": [],\r\n            \"insuranceLocal\": 136792.917,\r\n            \"packageOfVolM3\": 1,\r\n            \"deductionsLocal\": 0,\r\n            \"insuranceFxRate\": 68.39645870495409,\r\n            \"intFreightLocal\": 136792.917,\r\n            \"otherCostsLocal\": 0,\r\n            \"valuationMethod\": \"1\",\r\n            \"deductedQuantity\": null,\r\n            \"deductionsFxRate\": 0,\r\n            \"descriptionGoods\": \" ---others\",\r\n            \"insuranceForeign\": 2000,\r\n            \"intFreightFxRate\": 68.39645870495409,\r\n            \"lineCurrencyCode\": \"AFN\",\r\n            \"lineExchangeRate\": 1,\r\n            \"netWeightUOMCode\": \"KGM\",\r\n            \"otherCostsFxRate\": 0,\r\n            \"deductionsForeign\": 0,\r\n            \"intFreightForeign\": 2000,\r\n            \"otherCostsForeign\": 0,\r\n            \"grossWeightUOMCode\": \"KGM\",\r\n            \"governmentProcedure\": \"2100\",\r\n            \"linePackageTypeCode\": \"4A\",\r\n            \"statisticalQuantity\": 15000,\r\n            \"statisticalUnitCode\": \"KGM\",\r\n            \"valuationMethodCode\": \"1\",\r\n            \"supplierRelationCode\": \"135\",\r\n            \"valueForeignCurrency\": 15000,\r\n            \"insuranceCurrencyCode\": \"USD\",\r\n            \"deductionsCurrencyCode\": 0,\r\n            \"intFreightCurrencyCode\": \"USD\",\r\n            \"otherCostsCurrencyCode\": 0,\r\n            \"associatedGovtProcedure\": true,\r\n            \"valuationAdjustmentRate\": 1,\r\n            \"valuationAdjustmentValue\": 0,\r\n            \"commodityClassificationRef\": null,\r\n            \"commodityClassificationCode\": null,\r\n            \"valuationAdjustmentTypeCode\": null\r\n        }\r\n    ],\r\n    \"containers\": [\r\n        {\r\n            \"seals\": \"4000001, 4000002, 4000003, 4000004\",\r\n            \"containerType\": \"20R0\",\r\n            \"containerNumber\": \"MSCU2092276\"\r\n        },\r\n        {\r\n            \"seals\": \"5000001, 5000002, 5000003, 5000004\",\r\n            \"containerType\": \"20R0\",\r\n            \"containerNumber\": \"IPXU2148384\"\r\n        }\r\n    ],\r\n    \"attachments\": [],\r\n    \"totalNetWeight\": 0,\r\n    \"totalVehicles\": 0,\r\n    \"totalContainers\": 2,\r\n    \"officeEntryCode\": \"SAJED\",\r\n    \"officeExportCode\": \"SAJED\",\r\n    \"officeDeclarationCode\": \"GHABK\",\r\n    \"securityTypeCode\": \"BON\",\r\n    \"securityDetails\": \"100001765BGC24082024-TE\",\r\n    \"totalFreight\": 136792.917,\r\n    \"totalGrossWeight\": 10000,\r\n    \"totalInvoiceAmount\": 15000,\r\n    \"totalPackages\": 10000,\r\n    \"totalInsurance\": 136792.917,\r\n    \"totalLines\": 1,\r\n    \"totalDocuments\": 0,\r\n    \"incotermCode\": \"CFR\",\r\n    \"incotermPlaceCode\": \"SAJED\",\r\n    \"incotermPlaceName\": \"Jeddah\",\r\n    \"natureTransactionCode\": \"1\",\r\n    \"declarationCurrencyCode\": \"AFN\",\r\n    \"consignee\": \"7632890145\",\r\n    \"consigneeCountry\": \"IN\",\r\n    \"freightApportQualifierCode\": null,\r\n    \"goodsLocationCode\": \"889911CCA\",\r\n    \"freightApportQualifier\": \"VOL\",\r\n    \"parties\": [\r\n        {\r\n            \"name\": \"Godi Cheese With Vegetable Oil\",\r\n            \"type\": \"NOTIFY_PARTIES\",\r\n            \"address\": \"1001 Industry Rd, Suite AKenner, LA 70062\",\r\n            \"communication\": \"TE\",\r\n            \"communicationReference\": \"973172696\"\r\n        }\r\n    ],\r\n    \"packages\": [\r\n        {\r\n            \"total\": 1000,\r\n            \"packageType\": \"1A\"\r\n        }\r\n    ],\r\n    \"previousDocumentNo\": null,\r\n    \"previousDocumentDate\": null,\r\n    \"countryExportCode\": \"IN\",\r\n    \"facilityCode\": \"PK002\",\r\n    \"carrierCode\": \"44440001\",\r\n    \"loadingPlaceCode\": \"SAJED\",\r\n    \"placeDischargeCode\": \"GHABK\",\r\n    \"countryDestinationCode\": \"AD\",\r\n    \"arrivalDate\": \"2021-09-13T00:00:00.000Z\",\r\n    \"typeMeansTadCode\": \"1\",\r\n    \"nationalMeansTadCode\": \"IN\",\r\n    \"identificationMeansTad\": \"SA578\",\r\n    \"remarks\": null,\r\n    \"totalInsuranceForeign\": 2000,\r\n    \"totalIntFreightForeign\": 2000,\r\n    \"expiryDate\": \"2025-09-24T02:06:32.880Z\",\r\n    \"selfDeclared\": true,\r\n    \"agentId\": \"7d4e0dcb-0e3e-4fbb-87fb-acb555ae4edd\",\r\n    \"agentBlacklistedLatest\": false,\r\n    \"traderId\": \"7d4e0dcb-0e3e-4fbb-87fb-acb555ae4edd\",\r\n    \"traderBlacklistedLatest\": false,\r\n    \"consignorName\": null,\r\n    \"consignorCommunication\": null,\r\n    \"consignorAddress\": null,\r\n    \"consignorCommunicationReference\": null,\r\n    \"traderReference\": null,\r\n    \"completionTempDec\": false,\r\n    \"invoiceDocument\": [],\r\n    \"additionalDocument\": [],\r\n    \"transportDocuments\": [],\r\n    \"ecvrOptionalFee\": false,\r\n    \"htt001OptionalFee\": false,\r\n    \"hlevyOptionalFee\": false,\r\n    \"consigneeName\": \"SHREE KRISHNA RICE MILLS\",\r\n    \"id\": \"{{IDReference_TemporaryEXdraft}}\",\r\n    \"reference\": \"{{Reference_TemporaryEXdraf}}\",\r\n    \"reasons\": [],\r\n    \"rejectReasons\": null,\r\n    \"cancelReasons\": null,\r\n    \"inquiries\": null,\r\n    \"errorReason\": null,\r\n    \"agentBlacklisted\": false,\r\n    \"traderBlacklisted\": false,\r\n    \"version\": 0,\r\n    \"consigneeCommunication\": \"AH\",\r\n    \"consigneeAddress\": \"Galb Kheri Road, Pakhana\",\r\n    \"consigneeCommunicationReference\": \"abc.com\",\r\n    \"facilityName\": \"PK002\",\r\n    \"depositPeriod\": 120,\r\n    \"type\": \"SUBMISSION\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{evn}}/api/gateway/v1/decman/forms/4/validations?",
+							"host": [
+								"{{evn}}"
+							],
+							"path": [
+								"api",
+								"gateway",
+								"v1",
+								"decman",
+								"forms",
+								"4",
+								"validations"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SubmitTemporaryEX",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data;\r",
+									"data = pm.response.json();\r",
+									"if(data)\r",
+									"{\r",
+									"   pm.environment.set(\"RegistrationReference_TemporaryEX\", data.data.registrationReference);\r",
+									"    pm.environment.set(\"IDRegistrationReference_TemporaryEX\", data.data.request.applyTo);\r",
+									"\r",
+									"}\r",
+									"pm.test(\"Status is SUBMITTED\", function () {\r",
+									"    pm.expect(data.data.request.status).to.include(\"SUBMITTED\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"//  pm.test(\"Check the declaration after submitting it successfully.\", function () {\r",
+									"\r",
+									"//      pm.expect(data.data.registrationReference).to.include(pm.variables.get(\"RegistrationReference_TemporaryEX\"));\r",
+									"\r",
+									"// });\r",
+									"\r",
+									" pm.execution.setNextRequest(\"SearchTemporaryEX\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const evn = pm.variables.get(\"evn\");\r",
+									"pm.sendRequest({\r",
+									"      url: `${evn}/apps/keycloak/realms/TTEK_STAGING/protocol/openid-connect/token`,\r",
+									"      method: 'POST',\r",
+									"       header: {\r",
+									"    'Content-Type': 'application/x-www-form-urlencoded',\r",
+									"  },\r",
+									"      body: {\r",
+									"          mode: 'urlencoded',\r",
+									"          urlencoded: [\r",
+									"            {key: \"grant_type\", value: \"password\"},\r",
+									"            {key: \"client_id\", value: \"BV_SWAGGER_UI\"},\r",
+									"            {key: \"username\", value: \"atlas.officer@yopmail.com\"},\r",
+									"            {key: \"password\", value: \"@Ttek1234\"},\r",
+									"        ]\r",
+									"      }\r",
+									"  }, \r",
+									"  function (err, response) {\r",
+									"    console.log(\"token\",response.json().access_token);\r",
+									"        pm.environment.set(\"tokenIMEX\", response.json().access_token);\r",
+									"  });"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tokenIMEX}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{evn}}/api/gateway/v1/decman/requests/{{IDReference_TemporaryEXdraft}}/submit",
+							"host": [
+								"{{evn}}"
+							],
+							"path": [
+								"api",
+								"gateway",
+								"v1",
+								"decman",
+								"requests",
+								"{{IDReference_TemporaryEXdraft}}",
+								"submit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SearchTemporaryEX",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Response success is true\", function () {\r",
+									"   pm.expect(data.success).to.be.true;\r",
+									"});\r",
+									" pm.test(\"Compare data after searching based on the Declaration document.\", function () {\r",
+									"\r",
+									"     pm.expect(data.data.content[0].reference).to.include(pm.variables.get(\"RegistrationReference_TemporaryEX\"));\r",
+									"\r",
+									"});\r",
+									"pm.execution.setNextRequest(\"SearchinvoidceDecTemporaryEX\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const evn = pm.variables.get(\"evn\");\r",
+									"pm.sendRequest({\r",
+									"      url: `${evn}/apps/keycloak/realms/TTEK_STAGING/protocol/openid-connect/token`,\r",
+									"      method: 'POST',\r",
+									"       header: {\r",
+									"    'Content-Type': 'application/x-www-form-urlencoded',\r",
+									"  },\r",
+									"      body: {\r",
+									"          mode: 'urlencoded',\r",
+									"          urlencoded: [\r",
+									"            {key: \"grant_type\", value: \"password\"},\r",
+									"            {key: \"client_id\", value: \"BV_SWAGGER_UI\"},\r",
+									"            {key: \"username\", value: \"atlas.officer@yopmail.com\"},\r",
+									"            {key: \"password\", value: \"@Ttek1234\"},\r",
+									"        ]\r",
+									"      }\r",
+									"  }, \r",
+									"  function (err, response) {\r",
+									"    console.log(\"token\",response.json().access_token);\r",
+									"        pm.environment.set(\"tokenIMEX\", response.json().access_token);\r",
+									"  });"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tokenIMEX}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{evn}}/api/gateway/v1/decman/declarations?page=0&size=10&reference={{RegistrationReference_TemporaryEX}}",
+							"host": [
+								"{{evn}}"
+							],
+							"path": [
+								"api",
+								"gateway",
+								"v1",
+								"decman",
+								"declarations"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "reference",
+									"value": "{{RegistrationReference_TemporaryEX}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SearchinvoidceDecTemporaryEX",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var dec = pm.response.json();\r",
+									"\r",
+									"if (dec) {\r",
+									"    pm.environment.set(\"InvoiceDecTemporaryEX\", dec.data.content[0].id);\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Check RegistrationReference_Dec\", function () {\r",
+									"    pm.expect(dec.data.content[0].referenceDocument).to.include(pm.variables.get(\"RegistrationReference_TemporaryEX\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(dec.data.content[0].status).to.eql(\"CREATED\"); // Updated condition for 'CREATED' status\r",
+									"});\r",
+									"let a = dec.data.content[0].status;\r",
+									"console.log(a)\r",
+									"if (a === \"CREATED\") {\r",
+									"  \r",
+									"    pm.execution.setNextRequest(\"Payment_DecTemporaryEX\");\r",
+									"}\r",
+									"else\r",
+									"{\r",
+									"    pm.execution.setNextRequest(null)\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const evn = pm.variables.get(\"evn\");\r",
+									"pm.sendRequest({\r",
+									"      url: `${evn}/apps/keycloak/realms/TTEK_STAGING/protocol/openid-connect/token`,\r",
+									"      method: 'POST',\r",
+									"       header: {\r",
+									"    'Content-Type': 'application/x-www-form-urlencoded',\r",
+									"  },\r",
+									"      body: {\r",
+									"          mode: 'urlencoded',\r",
+									"          urlencoded: [\r",
+									"            {key: \"grant_type\", value: \"password\"},\r",
+									"            {key: \"client_id\", value: \"BV_SWAGGER_UI\"},\r",
+									"            {key: \"username\", value: \"atlas.cashier@yopmail.com\"},\r",
+									"            {key: \"password\", value: \"@Ttek1234\"},\r",
+									"        ]\r",
+									"      }\r",
+									"  }, \r",
+									"  function (err, response) {\r",
+									"    console.log(\"token\",response.json().access_token);\r",
+									"        pm.environment.set(\"tokencashierCompany\", response.json().access_token);\r",
+									"  });"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tokencashierCompany}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{evn}}/api/gateway/v1/revman/invoices?&page=0&size=10&referenceDocument={{RegistrationReference_TemporaryEX}}",
+							"host": [
+								"{{evn}}"
+							],
+							"path": [
+								"api",
+								"gateway",
+								"v1",
+								"revman",
+								"invoices"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "referenceDocument",
+									"value": "{{RegistrationReference_TemporaryEX}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Payment_DecTemporaryEX",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data;\r",
+									"dataDec = pm.response.json();\r",
+									"if(dataDec.success == true)\r",
+									"{\r",
+									"   pm.execution.setNextRequest(\"Releasing_DecTemporaryEX\");\r",
+									"   \r",
+									"}\r",
+									"else\r",
+									"{\r",
+									"    pm.execution.setNextRequest(null)\r",
+									"}\r",
+									" pm.test(\"Status code is 200\", function () {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									" pm.test(\"Payment success\", function () {\r",
+									"   pm.expect(dataDec.success).to.eql(true);\r",
+									" })"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const evn = pm.variables.get(\"evn\");\r",
+									"pm.sendRequest({\r",
+									"      url: `${evn}/apps/keycloak/realms/TTEK_STAGING/protocol/openid-connect/token`,\r",
+									"      method: 'POST',\r",
+									"       header: {\r",
+									"    'Content-Type': 'application/x-www-form-urlencoded',\r",
+									"  },\r",
+									"      body: {\r",
+									"          mode: 'urlencoded',\r",
+									"          urlencoded: [\r",
+									"            {key: \"grant_type\", value: \"password\"},\r",
+									"            {key: \"client_id\", value: \"BV_SWAGGER_UI\"},\r",
+									"            {key: \"username\", value: \"atlas.cashier@yopmail.com\"},\r",
+									"            {key: \"password\", value: \"@Ttek1234\"},\r",
+									"        ]\r",
+									"      }\r",
+									"  }, \r",
+									"  function (err, response) {\r",
+									"    console.log(\"token\",response.json().access_token);\r",
+									"        pm.environment.set(\"tokencashierCompany\", response.json().access_token);\r",
+									"  });"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tokencashierCompany}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"paymentMethod\":\"2\",\"bankGuarantorCode\":null,\"bankAccountNo\":\"\",\"receiptReference\":\"\",\"notes\":\"6666\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{evn}}/api/gateway/v1/revman/invoices/{{InvoiceDecTemporaryEX}}/payments/requests",
+							"host": [
+								"{{evn}}"
+							],
+							"path": [
+								"api",
+								"gateway",
+								"v1",
+								"revman",
+								"invoices",
+								"{{InvoiceDecTemporaryEX}}",
+								"payments",
+								"requests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Releasing_DecTemporaryEX",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var dataDec = pm.response.json();\r",
+									"if(dataDec.success == true)\r",
+									"{\r",
+									"  pm.execution.setNextRequest(\"Release_DecTemporaryEX\");\r",
+									"   \r",
+									"}\r",
+									"else\r",
+									"{\r",
+									"    pm.execution.setNextRequest(null)\r",
+									"}\r",
+									" pm.test(\"Status code is 200\", function () {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									" pm.test(\"Releasing success\", function () {\r",
+									"   pm.expect(dataDec.success).to.eql(true);\r",
+									" })"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const evn = pm.variables.get(\"evn\");\r",
+									"pm.sendRequest({\r",
+									"      url: `${evn}/apps/keycloak/realms/TTEK_STAGING/protocol/openid-connect/token`,\r",
+									"      method: 'POST',\r",
+									"       header: {\r",
+									"    'Content-Type': 'application/x-www-form-urlencoded',\r",
+									"  },\r",
+									"      body: {\r",
+									"          mode: 'urlencoded',\r",
+									"          urlencoded: [\r",
+									"            {key: \"grant_type\", value: \"password\"},\r",
+									"            {key: \"client_id\", value: \"BV_SWAGGER_UI\"},\r",
+									"            {key: \"username\", value: \"customs.supervisor@yopmail.com\"},\r",
+									"            {key: \"password\", value: \"@Ttek1234\"},\r",
+									"        ]\r",
+									"      }\r",
+									"  }, \r",
+									"  function (err, response) {\r",
+									"    console.log(\"token\",response.json().access_token);\r",
+									"        pm.environment.set(\"tokencustomsp\", response.json().access_token);\r",
+									"  });"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tokencustomsp}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{evn}}/api/gateway/v1/decman/declarations/{{IDRegistrationReference_TemporaryEX}}/releasing",
+							"host": [
+								"{{evn}}"
+							],
+							"path": [
+								"api",
+								"gateway",
+								"v1",
+								"decman",
+								"declarations",
+								"{{IDRegistrationReference_TemporaryEX}}",
+								"releasing"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Release_DecTemporaryEX",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var dataDec = pm.response.json();\r",
+									"// if(dataDec.success == true)\r",
+									"// {\r",
+									"//   pm.execution.setNextRequest(\"Release_DecTemporary\");\r",
+									"   \r",
+									"// }\r",
+									" pm.test(\"Status code is 200\", function () {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									" pm.test(\"Release success\", function () {\r",
+									"   pm.expect(dataDec.success).to.eql(true);\r",
+									" })\r",
+									"  pm.test(\"Check the declaration after release success.\", function () {\r",
+									"\r",
+									"     pm.expect(dataDec.data.declarationReference).to.include(pm.variables.get(\"RegistrationReference_Warehousing\"));\r",
+									"     pm.expect(dataDec.data.releasedReference).to.is.not.null;\r",
+									"\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const evn = pm.variables.get(\"evn\");\r",
+									"pm.sendRequest({\r",
+									"      url: `${evn}/apps/keycloak/realms/TTEK_STAGING/protocol/openid-connect/token`,\r",
+									"      method: 'POST',\r",
+									"       header: {\r",
+									"    'Content-Type': 'application/x-www-form-urlencoded',\r",
+									"  },\r",
+									"      body: {\r",
+									"          mode: 'urlencoded',\r",
+									"          urlencoded: [\r",
+									"            {key: \"grant_type\", value: \"password\"},\r",
+									"            {key: \"client_id\", value: \"BV_SWAGGER_UI\"},\r",
+									"            {key: \"username\", value: \"customs.supervisor@yopmail.com\"},\r",
+									"            {key: \"password\", value: \"@Ttek1234\"},\r",
+									"        ]\r",
+									"      }\r",
+									"  }, \r",
+									"  function (err, response) {\r",
+									"    console.log(\"token\",response.json().access_token);\r",
+									"        pm.environment.set(\"tokencustomsp\", response.json().access_token);\r",
+									"  });"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tokencustomsp}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{evn}}/api/gateway/v1/decman/declarations{{IDRegistrationReference_TemporaryEX}}/release-orders",
+							"host": [
+								"{{evn}}"
+							],
+							"path": [
+								"api",
+								"gateway",
+								"v1",
+								"decman",
+								"declarations{{IDRegistrationReference_TemporaryEX}}",
+								"release-orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GoodsExit",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const evn = pm.variables.get(\"evn\");\r",
+									"pm.sendRequest({\r",
+									"      url: `${evn}/apps/keycloak/realms/TTEK_STAGING/protocol/openid-connect/token`,\r",
+									"      method: 'POST',\r",
+									"       header: {\r",
+									"    'Content-Type': 'application/x-www-form-urlencoded',\r",
+									"  },\r",
+									"      body: {\r",
+									"          mode: 'urlencoded',\r",
+									"          urlencoded: [\r",
+									"            {key: \"grant_type\", value: \"password\"},\r",
+									"            {key: \"client_id\", value: \"BV_SWAGGER_UI\"},\r",
+									"            {key: \"username\", value: \"customs.supervisor@yopmail.com\"},\r",
+									"            {key: \"password\", value: \"@Ttek1234\"},\r",
+									"        ]\r",
+									"      }\r",
+									"  }, \r",
+									"  function (err, response) {\r",
+									"    console.log(\"token\",response.json().access_token);\r",
+									"        pm.environment.set(\"tokencustomsp\", response.json().access_token);\r",
+									"  });"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tokencustomsp}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{evn}}/api/gateway/v1/decman/declarations/{{IDRegistrationReference_TemporaryEX}}/exit-notes",
+							"host": [
+								"{{evn}}"
+							],
+							"path": [
+								"api",
+								"gateway",
+								"v1",
+								"decman",
+								"declarations",
+								"{{IDRegistrationReference_TemporaryEX}}",
+								"exit-notes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
